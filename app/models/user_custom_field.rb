@@ -16,6 +16,6 @@ class UserCustomField < ApplicationRecord
   private
 
   def populate_internal_name
-    self.internal_name = internal_name.parameterize(separator: '_').underscore
+    self.internal_name = name&.parameterize(separator: '_')&.underscore
   end
 end
