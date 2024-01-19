@@ -3,6 +3,6 @@ FactoryBot.define do
     user
 
     name { 'test' }
-    type { :text }
+    field_type { 'text' }
   end
 end

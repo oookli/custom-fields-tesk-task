@@ -1,16 +1,15 @@
 class UserCustomField < ApplicationRecord
   belongs_to :user, dependent: :delete
-  validates :name, :internal_name, :type, presence: true
+  validates :name, :internal_name, :field_type, presence: true
 
   before_validation :populate_internal_name
 
-  enum type: {
-    text: 0,
-    number: 1,
+  enum field_type: {
+    text: 'text',
+    number: 'number',
     # the "select" name is reserved by Active Record, so as alternative name is dropdown here
-    dropdown: 2,
-    # multi-select
-    multi_dropdown: 3
+    dropdown: 'select',
+    multi_dropdown: 'multi-select'
   }
 
   private
