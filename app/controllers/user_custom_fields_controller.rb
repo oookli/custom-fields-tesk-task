@@ -1,0 +1,2 @@
+class UserCustomFieldsController < ApplicationController
+end
