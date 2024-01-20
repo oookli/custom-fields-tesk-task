@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  after_initialize :add_custom_fields
   before_validation :add_custom_fields_validations
 
   validates_presence_of :email
 
+  # this is a hack to support new and create with custom attributes, probably it's not a big deal to reinit
+  # store_accessor again on the after_initialize hook
   def initialize(attributes = {})
     add_custom_fields
 
@@ -24,7 +27,7 @@ class User < ApplicationRecord
       singleton_class.class_eval do
         case custom_field.field_type
         when 'number'
-          validates_numericality_of custom_field.internal_name, only_numeric: true, allow_nil: true
+          validates custom_field.internal_name, allow_nil: true, format: { with: /\d/, message: 'is not a number' }
         # when 'text'
         #   validates_presence_of custom_field.internal_name, allow_nil: true
         end

@@ -34,6 +34,10 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email)
+    params.require(:user).permit(:email, *custom_fields_attributes)
+  end
+
+  def custom_fields_attributes
+    UserCustomField.all.pluck(:internal_name).map(&:to_sym)
   end
 end
