@@ -13,8 +13,8 @@ describe 'UserCustomFields', type: :request do
       before do
         post '/user_custom_fields', params: {
           user_custom_field: {
-            name: name,
-            field_type: field_type
+            name:,
+            field_type:
           }
         }
       end
@@ -36,7 +36,7 @@ describe 'UserCustomFields', type: :request do
       before do
         post '/user_custom_fields', params: {
           user_custom_field: {
-            test: 'test',
+            test: 'test'
           }
         }
       end
@@ -46,8 +46,8 @@ describe 'UserCustomFields', type: :request do
       end
 
       it 'returns correct errors' do
-        expect(parsed_response[:errors][:name]).to include 'can\'t be blank'
-        expect(parsed_response[:errors][:internal_name]).to include 'can\'t be blank'
+        expect(parsed_response[:errors]).to include 'Name can\'t be blank'
+        expect(parsed_response[:errors]).to include 'Internal name can\'t be blank'
       end
     end
 
@@ -58,8 +58,8 @@ describe 'UserCustomFields', type: :request do
         post '/user_custom_fields', params: nil
       end
 
-      it 'returns unprocessable entity status' do
-        expect(response.status).to eq 422
+      it 'returns bad request status' do
+        expect(response.status).to eq 400
       end
 
       it 'returns correct error' do
