@@ -33,4 +33,8 @@ module ResponseHelper
       data: nil
     }, status: :not_found
   end
+
+  def render_destroy_response
+    render :nothing, status: :no_content
+  end
 end
