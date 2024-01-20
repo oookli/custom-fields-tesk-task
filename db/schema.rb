@@ -15,13 +15,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_18_182059) do
   enable_extension "plpgsql"
 
   create_table "user_custom_fields", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.string "name", null: false
     t.string "internal_name", null: false
     t.string "field_type", default: "text", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_user_custom_fields_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -30,5 +28,4 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_18_182059) do
     t.jsonb "custom_fields"
   end
 
-  add_foreign_key "user_custom_fields", "users"
 end

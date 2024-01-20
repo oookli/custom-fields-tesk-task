@@ -1,5 +1,4 @@
 class UserCustomField < ApplicationRecord
-  belongs_to :user, dependent: :delete
   validates :name, :internal_name, :field_type, presence: true
 
   before_validation :populate_internal_name
@@ -8,8 +7,8 @@ class UserCustomField < ApplicationRecord
     text: 'text',
     number: 'number',
     # the "select" name is reserved by Active Record, so as alternative name is dropdown here
-    dropdown: 'select',
-    multi_dropdown: 'multi-select'
+    # dropdown: 'select',
+    # multi_dropdown: 'multi-select'
   }
 
   private

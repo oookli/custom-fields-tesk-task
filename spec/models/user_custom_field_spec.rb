@@ -46,12 +46,4 @@ RSpec.describe UserCustomField, type: :model do
       expect(user_custom_field).not_to be_valid
     end
   end
-
-  context 'when user is not provided' do
-    let(:user_custom_field) { build(:user_custom_field, user: nil) }
-
-    it 'is not valid' do
-      expect(user_custom_field).not_to be_valid
-    end
-  end
 end
