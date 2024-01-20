@@ -3,6 +3,8 @@
 class User < ApplicationRecord
   before_validation :add_custom_fields_validations
 
+  validates_presence_of :email
+
   def initialize(attributes = {})
     add_custom_fields
 

@@ -2,12 +2,20 @@
 
 require 'rails_helper'
 
-RSpec.describe User, type: :model do
+describe User, type: :model do
   context 'without custom fields' do
     let(:user) { create(:user) }
 
     it 'is valid' do
       expect(user).to be_valid
+    end
+
+    context 'when email is not provided' do
+      let(:user) { build(:user, email: nil) }
+
+      it 'is not valid' do
+        expect(user).not_to be_valid
+      end
     end
   end
 
