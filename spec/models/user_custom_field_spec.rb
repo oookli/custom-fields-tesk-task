@@ -110,4 +110,15 @@ RSpec.describe UserCustomField, type: :model do
       expect(user_custom_field).not_to be_valid
     end
   end
+
+  context 'when item with such a name exists' do
+    let(:name) { 'some existed field' }
+
+    let!(:user_custom_field) { create(:user_custom_field, name:) }
+
+    it 'raises record not unique error' do
+      expect { create(:user_custom_field, name:) }
+        .to raise_error(ActiveRecord::RecordInvalid, /Name has already been taken/)
+    end
+  end
 end

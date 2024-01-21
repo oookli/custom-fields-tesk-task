@@ -2,6 +2,7 @@
 
 class UserCustomField < ApplicationRecord
   validates :name, :internal_name, :field_type, presence: true
+  validates_uniqueness_of :name, scope: :internal_name
 
   before_validation :populate_internal_name
 
