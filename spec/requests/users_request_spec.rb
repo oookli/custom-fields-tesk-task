@@ -224,7 +224,8 @@ describe 'Users', type: :request do
       create(:user_custom_field, name: 'first name', field_type: :text)
       create(:user_custom_field, name: 'age', field_type: :number)
       create(:user_custom_field, name: 'gender', field_type: :dropdown, options: %w[male female other])
-      create(:user_custom_field, name: 'movie genre', field_type: :multi_dropdown, options: %w[action comedy drama science])
+      create(:user_custom_field, name: 'movie genre', field_type: :multi_dropdown,
+                                 options: %w[action comedy drama science])
     end
 
     describe 'GET /users' do

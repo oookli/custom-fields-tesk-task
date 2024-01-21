@@ -24,7 +24,9 @@ describe User, type: :model do
       create(:user_custom_field, name: 'name', field_type: :text)
       create(:user_custom_field, name: 'age', field_type: :number)
       create(:user_custom_field, name: 'gender', field_type: :dropdown, options: %w[male female other])
-      create(:user_custom_field, name: 'movie genre', field_type: :multi_dropdown, options: %w[action comedy drama science])
+      create(:user_custom_field, name: 'movie genre',
+                                 field_type: :multi_dropdown,
+                                 options: %w[action comedy drama science])
     end
 
     let(:user) { build(:user) }
@@ -52,7 +54,8 @@ describe User, type: :model do
 
       expect(user.name).to eq 'test'
       expect(user.age).to eq 25
-      expect(user.custom_fields).to include 'age' => 25, 'name' => 'test', 'gender' => 'male', 'movie_genre' => %w[action drama]
+      expect(user.custom_fields)
+        .to include 'age' => 25, 'name' => 'test', 'gender' => 'male', 'movie_genre' => %w[action drama]
     end
 
     context 'when custom field with number type is set with wrong value' do
