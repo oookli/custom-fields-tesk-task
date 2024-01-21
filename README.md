@@ -32,10 +32,10 @@ To set up this Rails application on your local development environment, follow t
 
 - Clone this repository to your local machine:
    ```shell
-   git clone https://github.com/oookli/custom-fields-tesk-task
+   git clone https://github.com/oookli/custom-fields-test-task
 - Change into the project directory:
    ```shell
-   cd custom-fields-tesk-task
+   cd custom-fields-test-task
 - Install gem dependencies:
    ```shell
    bundle install
