@@ -28,8 +28,8 @@ class User < ApplicationRecord
         case custom_field.field_type
         when 'number'
           validates custom_field.internal_name, allow_nil: true, format: { with: /\d/, message: 'is not a number' }
-        # when 'text'
-        #   validates_presence_of custom_field.internal_name, allow_nil: true
+        when 'dropdown', 'multi_dropdown'
+          validates custom_field.internal_name, allow_nil: true, inclusion: { in: custom_field.options }
         end
       end
     end

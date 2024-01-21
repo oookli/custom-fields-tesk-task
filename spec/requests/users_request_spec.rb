@@ -223,12 +223,15 @@ describe 'Users', type: :request do
     before do
       create(:user_custom_field, name: 'first name', field_type: :text)
       create(:user_custom_field, name: 'age', field_type: :number)
+      create(:user_custom_field, name: 'gender', field_type: :dropdown, options: %w[male female other])
+      create(:user_custom_field, name: 'movie genre', field_type: :multi_dropdown, options: %w[action comedy drama science])
     end
 
     describe 'GET /users' do
       let!(:user1) { create(:user, email: 'test1@test.com') }
       let!(:user2) { create(:user, email: 'test2@test.com', first_name: 'second user', age: 25) }
-      let!(:user3) { create(:user, email: 'test3@test.com', first_name: 'third user', age: 30) }
+      let!(:user3) { create(:user, email: 'test3@test.com', first_name: 'third user', age: 30, gender: 'male') }
+      let!(:user4) { create(:user, email: 'test4@test.com', first_name: 'fourth user', movie_genre: %w[action comedy]) }
 
       before do
         get '/users'
@@ -239,16 +242,27 @@ describe 'Users', type: :request do
       end
 
       it 'returns correct data' do
-        expect(parsed_response[:data].count).to eq 3
+        expect(parsed_response[:data].count).to eq 4
         expect(parsed_response.dig(:data, 0, :email)).to eq 'test1@test.com'
-        expect(parsed_response.dig(:data, 0, :custom_fields, :first_name)).to eq nil
-        expect(parsed_response.dig(:data, 0, :custom_fields, :age)).to eq nil
+        expect(parsed_response.dig(:data, 0, :custom_fields, :first_name)).to be_nil
+        expect(parsed_response.dig(:data, 0, :custom_fields, :age)).to be_nil
+        expect(parsed_response.dig(:data, 0, :custom_fields, :gender)).to be_nil
+        expect(parsed_response.dig(:data, 0, :custom_fields, :movie_genre)).to be_nil
         expect(parsed_response.dig(:data, 1, :email)).to eq 'test2@test.com'
         expect(parsed_response.dig(:data, 1, :custom_fields, :first_name)).to eq 'second user'
         expect(parsed_response.dig(:data, 1, :custom_fields, :age)).to eq 25
+        expect(parsed_response.dig(:data, 1, :custom_fields, :gender)).to be_nil
+        expect(parsed_response.dig(:data, 1, :custom_fields, :movie_genre)).to be_nil
         expect(parsed_response.dig(:data, 2, :email)).to eq 'test3@test.com'
         expect(parsed_response.dig(:data, 2, :custom_fields, :first_name)).to eq 'third user'
         expect(parsed_response.dig(:data, 2, :custom_fields, :age)).to eq 30
+        expect(parsed_response.dig(:data, 2, :custom_fields, :gender)).to eq 'male'
+        expect(parsed_response.dig(:data, 2, :custom_fields, :movie_genre)).to be_nil
+        expect(parsed_response.dig(:data, 3, :email)).to eq 'test4@test.com'
+        expect(parsed_response.dig(:data, 3, :custom_fields, :first_name)).to eq 'fourth user'
+        expect(parsed_response.dig(:data, 3, :custom_fields, :age)).to be_nil
+        expect(parsed_response.dig(:data, 3, :custom_fields, :gender)).to be_nil
+        expect(parsed_response.dig(:data, 3, :custom_fields, :movie_genre)).to eq %w[action comedy]
       end
     end
 
@@ -258,13 +272,17 @@ describe 'Users', type: :request do
       context 'with valid attributes' do
         let(:user_first_name) { 'new first name' }
         let(:user_age) { 20 }
+        let(:user_gender) { 'female' }
+        let(:user_movie_genre) { %w[science drama] }
 
         before do
           post '/users', params: {
             user: {
               email: user_email,
               first_name: user_first_name,
-              age: user_age
+              age: user_age,
+              gender: user_gender,
+              movie_genre: user_movie_genre
             }
           }
         end
@@ -277,6 +295,8 @@ describe 'Users', type: :request do
           expect(parsed_response.dig(:data, :email)).to eq user_email
           expect(parsed_response.dig(:data, :custom_fields, :first_name)).to eq user_first_name
           expect(parsed_response.dig(:data, :custom_fields, :age)).to eq user_age.to_s
+          expect(parsed_response.dig(:data, :custom_fields, :gender)).to eq user_gender
+          expect(parsed_response.dig(:data, :custom_fields, :movie_genre)).to eq user_movie_genre
         end
       end
 
@@ -285,7 +305,9 @@ describe 'Users', type: :request do
           post '/users', params: {
             user: {
               email: user_email,
-              age: 'test age'
+              age: 'test age',
+              movie_genre: %w[fiction],
+              gender: 'something'
             }
           }
         end
@@ -296,6 +318,8 @@ describe 'Users', type: :request do
 
         it 'returns correct errors' do
           expect(parsed_response[:errors]).to include 'Age is not a number'
+          expect(parsed_response[:errors]).to include 'Gender is not included in the list'
+          expect(parsed_response[:errors]).to include 'Movie genre is not included in the list'
         end
       end
 
@@ -320,12 +344,14 @@ describe 'Users', type: :request do
       context 'with valid attributes' do
         let(:user_updated_first_name) { 'new updated first name' }
         let(:user_updated_age) { 50 }
+        let(:user_movie_genre) { %w[science comedy] }
 
         before do
           patch "/users/#{existed_user.id}", params: {
             user: {
               first_name: user_updated_first_name,
-              age: user_updated_age
+              age: user_updated_age,
+              movie_genre: user_movie_genre
             }
           }
         end
@@ -338,6 +364,7 @@ describe 'Users', type: :request do
           expect(parsed_response.dig(:data, :email)).to eq existed_user.email
           expect(parsed_response.dig(:data, :custom_fields, :first_name)).to eq user_updated_first_name
           expect(parsed_response.dig(:data, :custom_fields, :age)).to eq user_updated_age.to_s
+          expect(parsed_response.dig(:data, :custom_fields, :movie_genre)).to eq user_movie_genre
         end
 
         context 'when user does not exist' do
@@ -345,7 +372,8 @@ describe 'Users', type: :request do
             patch '/users/non_existed_id', params: {
               user: {
                 first_name: user_updated_first_name,
-                age: user_updated_age
+                age: user_updated_age,
+                movie_genre: user_movie_genre
               }
             }
           end
@@ -364,7 +392,8 @@ describe 'Users', type: :request do
         before do
           patch "/users/#{existed_user.id}", params: {
             user: {
-              age: 'too old for that s**t'
+              age: 'too old for that s**t',
+              gender: 'something'
             }
           }
         end
@@ -375,6 +404,7 @@ describe 'Users', type: :request do
 
         it 'returns correct errors' do
           expect(parsed_response[:errors]).to include 'Age is not a number'
+          expect(parsed_response[:errors]).to include 'Gender is not included in the list'
         end
       end
 
@@ -396,7 +426,9 @@ describe 'Users', type: :request do
     describe 'GET /users/:id' do
       let(:user_first_name) { 'some first name' }
       let(:user_age) { 26 }
-      let(:existed_user) { create(:user, first_name: user_first_name, age: user_age) }
+      let(:existed_user) do
+        create(:user, first_name: user_first_name, age: user_age, gender: 'other', movie_genre: %w[comedy action])
+      end
 
       before do
         get "/users/#{existed_user.id}"
@@ -407,6 +439,8 @@ describe 'Users', type: :request do
         expect(parsed_response.dig(:data, :email)).to eq existed_user.email
         expect(parsed_response.dig(:data, :custom_fields, :first_name)).to eq user_first_name
         expect(parsed_response.dig(:data, :custom_fields, :age)).to eq user_age
+        expect(parsed_response.dig(:data, :custom_fields, :gender)).to eq 'other'
+        expect(parsed_response.dig(:data, :custom_fields, :movie_genre)).to eq %w[comedy action]
         expect(parsed_response.dig(:data, :created_at)).to eq existed_user.created_at.iso8601(3)
         expect(parsed_response.dig(:data, :updated_at)).to eq existed_user.updated_at.iso8601(3)
       end

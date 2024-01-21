@@ -23,6 +23,8 @@ describe User, type: :model do
     before do
       create(:user_custom_field, name: 'name', field_type: :text)
       create(:user_custom_field, name: 'age', field_type: :number)
+      create(:user_custom_field, name: 'gender', field_type: :dropdown, options: %w[male female other])
+      create(:user_custom_field, name: 'movie genre', field_type: :multi_dropdown, options: %w[action comedy drama science])
     end
 
     let(:user) { build(:user) }
@@ -40,6 +42,8 @@ describe User, type: :model do
     it 'saves custom fields correctly' do
       user.name = 'test'
       user.age = 25
+      user.gender = 'male'
+      user.movie_genre = %w[action drama]
       user.save
 
       expect(user).to be_valid
@@ -48,7 +52,7 @@ describe User, type: :model do
 
       expect(user.name).to eq 'test'
       expect(user.age).to eq 25
-      expect(user.custom_fields).to include 'age' => 25, 'name' => 'test'
+      expect(user.custom_fields).to include 'age' => 25, 'name' => 'test', 'gender' => 'male', 'movie_genre' => %w[action drama]
     end
 
     context 'when custom field with number type is set with wrong value' do
@@ -57,6 +61,24 @@ describe User, type: :model do
         user.validate
 
         expect(user.errors.full_messages).to include(match('Age is not a number'))
+      end
+    end
+
+    context 'when custom field with dropdown type is set with wrong value' do
+      it 'raises an error' do
+        user.gender = 'hm'
+        user.validate
+
+        expect(user.errors.full_messages).to include(match('Gender is not included in the list'))
+      end
+    end
+
+    context 'when custom field with multiple dropdown type is set with wrong value' do
+      it 'raises an error' do
+        user.movie_genre = %w[drama fiction]
+        user.validate
+
+        expect(user.errors.full_messages).to include(match('Movie genre is not included in the list'))
       end
     end
   end

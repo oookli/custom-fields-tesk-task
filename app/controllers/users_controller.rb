@@ -38,6 +38,10 @@ class UsersController < ApplicationController
   end
 
   def custom_fields_attributes
-    UserCustomField.all.pluck(:internal_name).map(&:to_sym)
+    UserCustomField.all.map do |custom_field|
+      next Hash[custom_field.internal_name.to_sym, []] if custom_field.field_type == 'multi_dropdown'
+
+      custom_field.internal_name.to_sym
+    end
   end
 end
