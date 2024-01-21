@@ -6,13 +6,13 @@ class UserCustomField < ApplicationRecord
 
   before_validation :populate_internal_name
 
-  enum field_type: {
+  enum :field_type, {
     text: 'text',
     number: 'number',
     # the "select" name is reserved by Active Record, so as alternative name is dropdown here
     dropdown: 'select',
     multi_dropdown: 'multi-select'
-  }
+  }, validate: true
 
   validates_presence_of :options, if: :field_type_dropdown?
 

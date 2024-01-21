@@ -84,7 +84,7 @@ RSpec.describe UserCustomField, type: :model do
 
     it 'raises record invalid error' do
       expect { create(:user_custom_field, field_type: invalid_type) }.to raise_error(
-        ArgumentError, /is not a valid field_type/
+        ActiveRecord::RecordInvalid, /Field type is not included in the list/
       )
     end
   end

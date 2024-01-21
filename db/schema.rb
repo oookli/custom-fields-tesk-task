@@ -17,7 +17,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_21_134725) do
   create_table "user_custom_fields", force: :cascade do |t|
     t.string "name", null: false
     t.string "internal_name", null: false
-    t.string "field_type", default: "text", null: false
+    t.string "field_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "options", array: true
