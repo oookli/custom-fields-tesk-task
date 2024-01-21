@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe UserCustomField, type: :model do
   let(:name) { 'some test name' }
   let(:type) { :number }
-  let(:user_custom_field) { create(:user_custom_field, name: name, field_type: type) }
+  let(:user_custom_field) { create(:user_custom_field, name:, field_type: type) }
 
   it 'is valid' do
     expect(user_custom_field).to be_valid
@@ -13,6 +13,70 @@ RSpec.describe UserCustomField, type: :model do
 
   it 'generates correct internal_name' do
     expect(user_custom_field.internal_name).to eq 'some_test_name'
+  end
+
+  context 'when field type is dropdown' do
+    let(:user_custom_field) { create(:user_custom_field, name:, field_type: :dropdown, options: %w[test1 test2]) }
+
+    it 'is valid' do
+      expect(user_custom_field).to be_valid
+    end
+
+    context 'when options is not set' do
+      let(:user_custom_field) { build(:user_custom_field, name:, field_type: :dropdown) }
+
+      before { user_custom_field.validate }
+
+      it 'is not valid' do
+        expect(user_custom_field).not_to be_valid
+      end
+
+      it 'raises validation failed' do
+        expect(user_custom_field.errors.full_messages).to include(match('Options can\'t be blank'))
+      end
+    end
+
+    context 'when options is not valid' do
+      let(:user_custom_field) { build(:user_custom_field, name:, field_type: :dropdown, options: 'test') }
+
+      before { user_custom_field.validate }
+
+      it 'is not valid' do
+        expect(user_custom_field).not_to be_valid
+      end
+    end
+  end
+
+  context 'when field type is multi_dropdown' do
+    let(:user_custom_field) { create(:user_custom_field, name:, field_type: :multi_dropdown, options: %w[test1 test2]) }
+
+    it 'is valid' do
+      expect(user_custom_field).to be_valid
+    end
+
+    context 'when options is not set' do
+      let(:user_custom_field) { build(:user_custom_field, name:, field_type: :multi_dropdown) }
+
+      before { user_custom_field.validate }
+
+      it 'is not valid' do
+        expect(user_custom_field).not_to be_valid
+      end
+
+      it 'raises validation failed' do
+        expect(user_custom_field.errors.full_messages).to include(match('Options can\'t be blank'))
+      end
+    end
+
+    context 'when options is not valid' do
+      let(:user_custom_field) { build(:user_custom_field, name:, field_type: :multi_dropdown, options: 'test') }
+
+      before { user_custom_field.validate }
+
+      it 'is not valid' do
+        expect(user_custom_field).not_to be_valid
+      end
+    end
   end
 
   context 'when field type is not correct' do

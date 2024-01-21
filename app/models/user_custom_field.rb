@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserCustomField < ApplicationRecord
   validates :name, :internal_name, :field_type, presence: true
 
@@ -7,13 +9,19 @@ class UserCustomField < ApplicationRecord
     text: 'text',
     number: 'number',
     # the "select" name is reserved by Active Record, so as alternative name is dropdown here
-    # dropdown: 'select',
-    # multi_dropdown: 'multi-select'
+    dropdown: 'select',
+    multi_dropdown: 'multi-select'
   }
+
+  validates_presence_of :options, if: :field_type_dropdown?
 
   private
 
   def populate_internal_name
     self.internal_name = name&.parameterize(separator: '_')&.underscore
+  end
+
+  def field_type_dropdown?
+    %w[dropdown multi_dropdown].include? field_type
   end
 end

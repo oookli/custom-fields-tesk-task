@@ -30,6 +30,6 @@ class UserCustomFieldsController < ApplicationController
   private
 
   def user_custom_field_params
-    params.require(:user_custom_field).permit(:name, :field_type)
+    params.require(:user_custom_field).permit(:name, :field_type, options: [])
   end
 end
