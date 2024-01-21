@@ -15,6 +15,14 @@ RSpec.describe UserCustomField, type: :model do
     expect(user_custom_field.internal_name).to eq 'some_test_name'
   end
 
+  context 'when options is provided' do
+    it 'raises record invalid error' do
+      expect { create(:user_custom_field, name:, field_type: type, options: %w[test1 test2]) }.to raise_error(
+        ActiveRecord::RecordInvalid, /Options must be blank/
+      )
+    end
+  end
+
   context 'when field type is dropdown' do
     let(:user_custom_field) { create(:user_custom_field, name:, field_type: :dropdown, options: %w[test1 test2]) }
 

@@ -14,6 +14,7 @@ class UserCustomField < ApplicationRecord
     multi_dropdown: 'multi-select'
   }, validate: true
 
+  validates_absence_of :options, unless: :field_type_dropdown?
   validates_presence_of :options, if: :field_type_dropdown?
 
   private
