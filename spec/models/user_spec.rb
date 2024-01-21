@@ -19,6 +19,17 @@ describe User, type: :model do
     end
   end
 
+  context 'when item with such email  exists' do
+    let(:email) { 'example@test.com' }
+
+    let!(:user_custom_field) { create(:user, email:) }
+
+    it 'raises record not unique error' do
+      expect { create(:user, email:) }
+        .to raise_error(ActiveRecord::RecordInvalid, /Email has already been taken/)
+    end
+  end
+
   context 'with custom fields' do
     before do
       create(:user_custom_field, name: 'name', field_type: :text)

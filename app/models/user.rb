@@ -5,6 +5,7 @@ class User < ApplicationRecord
   before_validation :add_custom_fields_validations
 
   validates_presence_of :email
+  validates_uniqueness_of :email
 
   # this is a hack to support new and create with custom attributes, probably it's not a big deal to reinit
   # store_accessor again on the after_initialize hook
