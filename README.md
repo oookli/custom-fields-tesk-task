@@ -8,6 +8,7 @@ This README provides an overview of the project and instructions on how to set i
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Demo](#demo)
 
 ## Introduction
 
@@ -91,7 +92,7 @@ To set up this Rails application on your local development environment, follow t
 
 ##### Retrieve Custom Fields
 - **GET** `/user_custom_fields`
-  - Retrieve a list of all custom fields available that uses for users.
+  - Retrieve a list of all custom fields available for users.
 
 ##### Update a Custom Field
 - **PUT** `/user_custom_fields/:id`
@@ -104,7 +105,7 @@ To set up this Rails application on your local development environment, follow t
 
 ### Example Usage
 
-Here's an basic examples how to interact with the API:
+Here's a basic example of how to interact with the API:
 
 - create a new user custom field using the `/user_custom_fields` endpoint:
 
@@ -130,3 +131,7 @@ Here's an basic examples how to interact with the API:
          }' \
          "http://localhost:3000/users"
     ```
+
+## Demo
+
+https://www.icloud.com/iclouddrive/0ccEQANsJ3ripz7Z5DVDevVMw#demo
